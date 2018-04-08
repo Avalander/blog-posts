@@ -121,6 +121,17 @@ const maybe = value =>
         : Left())
 ```
 
+Or, if you don't like ternary operators that much,
+
+```javascript
+const maybe = value => {
+    if (value != null) {
+        return Right(value)
+    }
+    return Left()
+}
+```
+
 ### TryCatch
 
 Sometimes we might want to call a function that can throw an exception and treat the exception as an error with an `Either`. That might come in handy if we are using `Either` to handle errors in our code and need to interface with a library that handles errors by throwing exceptions (and expecting the user to catch them).
@@ -145,17 +156,6 @@ const condition = (pred, value, reason) =>
     (pred(value)
         ? Right(value)
         : Left(reason))
-```
-
-Or, if you don't like ternary operators that much,
-
-```javascript
-const condition = (pred, value, reason) => {
-    if (pred(value)) {
-        return Right(value)
-    }
-    return Left(reason)
-}
 ```
 
 Remember the `maybe` factory that we implemented a bit earlier? Turns out that it's only a specific case of `condition`.
