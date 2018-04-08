@@ -4,7 +4,7 @@ An `Either` is basically a container for a value that might be an error. With an
 
 ## How does Either work?
 
-To illustrate the `Either` construct, let's build it in Javascript.
+To illustrate the `Either` structure, let's build it in Javascript.
 
 First of all, an `Either` can hold a value or an error. We'll call them `Right` and `Left` respectively. In a sense, it's like having two branches, and you go either to the left if you get an error, or to the right if you get a valid value.
 
@@ -171,6 +171,6 @@ My personal opinion is that `Either` is simply a strategy to handle application 
 
 Some languages, like Python or Java, offer a well-thought exception system that can be used to handle any application errors that might happen. In these languages it's usually a good idea to keep things idiomatic.
 
-Other languages don't have an exception system and expect the programmer to return an error value if a function call might return an invalid value (I'm looking at you, Go). Then I think it's better to use an `Either` than returning `(err, result)` and having to check for `err` every time we call a function, especially if we need to pass the error one layer up where it can be handled.
+Other languages don't have an exception system and expect the programmer to return an error value if an error can happen in a function call (I'm looking at you, Go). Then I think it's better to use an `Either` than returning `(err, result)` and having to check for `err` every time we call a function, especially if we need to pass the error one layer up, where it can be handled.
 
 And then there is Javascript. It has an exception system. Sort of. The problem is that catching specific errors while letting others propagate with Javascript's exception system is not a trivial task. Therefore it might be worth to use `Either` for application errors and leave exceptions for programming errors, instead of catching exceptions and trying to figure out if it's an error that should be handled here, elsewhere or make the application crash.
