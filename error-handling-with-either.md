@@ -1,14 +1,14 @@
 # Error handling with Either
 
-An **Either** is basically a container for a value that might be an error. With an Either we can apply transformations to the contained value without having to worry whether it is an error or not until we reach a point in our code where we want to handle the error, should it have happened. It's a bit like a [Schrödinger's box](https://en.wikipedia.org/wiki/Schr%C3%B6dinger%27s_cat): the value might or might not be an error, we won't know until we open it.
+An `Either` is basically a container for a value that might be an error. With an `Either` we can apply transformations to the contained value without having to worry whether it is an error or not until we reach a point in our code where we want to handle the error, should it have happened. It's a bit like a [Schrödinger's box](https://en.wikipedia.org/wiki/Schr%C3%B6dinger%27s_cat): the value might or might not be an error, we won't know until we open it.
 
-## How does an Either work?
+## How does Either work?
 
-To illustrate the Either construct, let's build it in Javascript.
+To illustrate the `Either` construct, let's build it in Javascript.
 
-First of all, an Either can hold a value or an error. We'll call them `Right` and `Left` respectively. In a sense, it's like having two branches, and you go either to the left if you get an error, or to the right if you get a valid value.
+First of all, an `Either` can hold a value or an error. We'll call them `Right` and `Left` respectively. In a sense, it's like having two branches, and you go either to the left if you get an error, or to the right if you get a valid value.
 
-Also, we need to be able to apply transformations to the value that is in the Either. Otherwise it's not really useful. We want a `map` function to do that. And we are going to apply the transformation only if we are on the `Right` branch, and ignore it if we have a `Left`.
+Also, we need to be able to apply transformations to the value that is in the `Either`. Otherwise it's not really useful. We want a `map` function to do that. And we are going to apply the transformation only if we are on the `Right` branch, and ignore it if we have a `Left`.
 
 ```javascript
 const Left = x => ({
@@ -56,7 +56,7 @@ const Right x => ({
 
 `Left.chain` still doesn't apply the transformation, and it returns a `Left` holding the error, so we're sure we are not going to operate on an error should it have happened.
 
-`Right.chain` will apply the transformation `fn` to the contained value and return the result, without wrapping it in another `Right`, because it expects the function `fn` to return an `Either`. If we were implementing this in a real project, we probably would want to check that `fn` returns an `Either` and throw an error if it doesn't.
+`Right.chain` will apply the transformation `fn` to the contained value and return the result, without wrapping it in another `Right`, because it expects the function `fn` to return an `Either`. If we were implementing this in a real project, we would probably want to check that `fn` returns an `Either` and throw an error if it doesn't.
 
 We can use `chain` in the previous example to make sure that we don't end up with an `Either` inside another `Either`.
 
@@ -138,7 +138,7 @@ const tryCatch = (fn, ...args) => {
 
 ### Conditional
 
-We might want to check if a value fulfills a certain condition and return an error if it doesn't. We can define a factory that will take a predicate (i.e., a function that checks a condition on the value an returns either `true` or `false`) and a value, and return a `Right` if the condition holds true for the given value and a `Left` otherwise. We can even go fancy and allow to pass an extra argument with an error value (usually a message explaining why the value wasn't accepted) if the value doesn't fulfill the condition.
+We might want to check if a value fulfills a certain condition and return an error if it doesn't. We can define a factory that will take a predicate (i.e., a function that checks a condition on the value an returns either `true` or `false`) and a value, and return a `Right` if the condition holds true for the given value and a `Left` otherwise. We can get a bit fancier and allow an extra argument with an error value (usually a message explaining why the value wasn't accepted) if the value doesn't fulfill the condition.
 
 ```javascript
 const condition = (pred, value, reason) =>
@@ -164,3 +164,13 @@ Remember the `maybe` factory that we implemented a bit earlier? Turns out that i
 const maybe = value =>
     condition(x => x != null, value)
 ```
+
+## When to use Either
+
+My personal opinion is that `Either` is simply a strategy to handle application errors, and choosing this or another strategy is more a matter of preference that anything else.
+
+Some languages, like Python or Java, offer a well-thought exception system that can be used to handle any application errors that might happen. In these languages it's usually a good idea to keep things idiomatic.
+
+Other languages don't have an exception system and expect the programmer to return an error value if a function call might return an invalid value (I'm looking at you, Go). Then I think it's better to use an `Either` than returning `(err, result)` and having to check for `err` every time we call a function, especially if we need to pass the error one layer up where it can be handled.
+
+And then there is Javascript. It has an exception system. Sort of. The problem is that catching specific errors while letting others propagate with Javascript's exception system is not a trivial task. Therefore it might be worth to use `Either` for application errors and leave exceptions for programming errors, instead of catching exceptions and trying to figure out if it's an error that should be handled here, elsewhere or make the application crash.
