@@ -1,5 +1,8 @@
 ---
 title: Union Types in Javascript
+published: false
+description: 
+tags: javascript, functional, union types, adt
 ---
 
 Lately I've been learnig [Elm](http://elm-lang.org/) and one thing that fascinated me is its [union types](https://guide.elm-lang.org/types/union_types.html). What I'll try to do in this article is to illustrate a way to implement union types in Javascript and explain through examples how union types could be useful.
@@ -315,12 +318,12 @@ You can check the full example in this [GitHub repo](https://github.com/Avalande
 
 # Limitations of this implementation
 
-If you compare this implementation with union types in Elm, you'll find it rather defective. Elm is a strongly typed language and the complier will tell us if we've forgotten to handle a branch of the union type or if we're matching agains the wrong type of data. Also, Elm allows to match one type with multiple types of data. With Javascript, we don't have any of this.
+If you compare this implementation with union types in Elm, you'll find it rather defective. Elm is a strongly typed language and the complier will tell us if we've forgotten to handle a branch of the union type or if we're matching agains the wrong type of data. Also, Elm allows to match one type multiple times as long as the specificity of the data varies. With Javascript, we don't have any of this.
 
 Truth to be told, with this implementation we won't even have any autocompletition help from our code editor. However, that could be addressed with a more verbose implementation, or using TypeScript typings.
 
 # Conclusion
 
-In this article I wanted to explore how union types could be implemented in Javascript and if using them could lead to code that is cleaner and easier to extend. I've got to say that I have mixed feelings about this. I like the pattern and I think it succeeds in producing code that's easy to reason about and extend. On the other hand, we miss all the safety that we would get from a statically typed language, which is part of the point. And we haven't really achieved anything that we couldn't have done with just some sensible structure in our code.
+In this article I wanted to explore how union types could be implemented in Javascript and if using them could lead to code that is cleaner and easier to extend. I've got to say that I have mixed feelings about this. I like the pattern and I think it succeeds in producing code that's easy to reason about and extend. On the other hand, we miss all the safety that we would get from a statically typed language, which is half of the point. And we haven't really achieved anything that we couldn't have done with just some sensible structure in our code.
 
 What do you think? Are union types any useful beyond appealing to an aesthetic preference for functional programming? I'd love to read your thoughts and opinions in the comments section.
