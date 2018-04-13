@@ -5,7 +5,7 @@ description:
 tags: javascript, functional, union types, adt
 ---
 
-Lately I've been learnig [Elm](http://elm-lang.org/) and one thing that fascinated me is its [union types](https://guide.elm-lang.org/types/union_types.html). What I'll try to do in this article is to illustrate a way to implement union types in Javascript and explain through examples how union types could be useful.
+Lately I've been learnig [Elm](http://elm-lang.org/) and I'm entirely fascinated by its [union types](https://guide.elm-lang.org/types/union_types.html). What I'll try to do in this article is to illustrate a way to implement union types in Javascript and explain through examples how union types could be useful.
 
 # What are union types?
 
@@ -98,7 +98,7 @@ mongodb.MongoClient.connect(DB_URL)
 
 If you're not familiar with express, don't worry. All you need to know is that we are going to implement a function that will receive a request object (we'll call it `req`) and a response object (we'll call it `res`) and that function will also have access to a database connection called `db`.
 
-Our function will check that the user is authentified, because our pony database holds very sensitive information. Then, it will read the `id` parameter from the path and fetch the pony with that id from the database. Finally, it will send the pony data back in the response.
+Our function will check that the user is authentified, because our pony database holds very sensitive information. Then, it will read the `id` parameter from the path and get the pony with that id from the database. Finally, it will send the pony data back in the response.
 
 There are at least three things that can go wrong.
 
@@ -177,7 +177,7 @@ And that's it. If we get an error in the rejection branch, we can use the method
 
 If we're honest, this is not very impressive. We could have done exactly the same with an enum-like object. Even though I think that the type matching is rather elegant, it doesn't make a big difference compared to a goold ol' `switch` statement.
 
-You can check the full example in this [GitHub repo](https://github.com/Avalander/union-types-example/examples/node).
+You can check the full example in this [GitHub repo](https://github.com/Avalander/union-types-example/tree/master/examples/node).
 
 ## Example 2: fetch remote data in a React component
 
@@ -216,7 +216,7 @@ We create a component that will hold some data and start with the state `NotAske
 
 ```javascript
 class Pony extends React.Component {
-    ...
+    // previous code here...
     render() {
         return this.state.data.match({
             NotAsked: () => (
@@ -243,14 +243,14 @@ const fetchPony = () => new Promise((resolve, reject) =>
             })
         }
         return reject({
-            message: 'I just don\'t know what went wrong.',
+            message: `I just don't know what went wrong.`,
         })
     },
     500)
 )
 ```
 
-`fetchPony` returns a promise that resolves in 500 miliseconds, to simulate the round trip to the server and to give us time to see the state changes. Also, it will return an error 20% of the time, so that we can see that state too.
+The function `fetchPony` returns a promise that resolves in 500 miliseconds, to simulate the round trip to the server and to give us some time to see the state changes. Also, it will return an error 20% of the time, so that we can see that state too.
 
 Now let's implement the `fetchData` method in the `Pony` component.
 
@@ -314,7 +314,7 @@ class Pony extends React.Component {
 
 And we're done! We have a component that will render one of four states, without using messy boolean flags all over the place.
 
-You can check the full example in this [GitHub repo](https://github.com/Avalander/union-types-example/examples/react).
+You can check the full example in this [GitHub repo](https://github.com/Avalander/union-types-example/tree/master/examples/react).
 
 # Limitations of this implementation
 
