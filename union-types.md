@@ -5,11 +5,11 @@ description:
 tags: javascript, functional, union types, adt
 ---
 
-Lately I've been learnig [Elm](http://elm-lang.org/) and I'm entirely fascinated by its [union types](https://guide.elm-lang.org/types/union_types.html). What I'll try to do in this article is to illustrate a way to implement union types in Javascript and explain through examples how union types could be useful.
+Lately I've been learnig [Elm](http://elm-lang.org/) and I'm entirely fascinated by its [union types](https://guide.elm-lang.org/types/union_types.html). In this article I'll show a way to implement union types in Javascript and explain through examples how they could be useful.
 
 # What are union types?
 
-Union types, also known as algebraic data types (or ADTs) are a way to express complex data that can take multiple forms. I'm not going to get deep into union types theory, but this [Wikipedia article](https://en.wikipedia.org/wiki/Algebraic_data_type) does an excelent job explaining them.
+Union types, also known as algebraic data types (or ADTs) are a way to express complex data that can take multiple forms. I won't dive deep into union types theory, but this [Wikipedia article](https://en.wikipedia.org/wiki/Algebraic_data_type) does an excelent job at explaining them.
 
 All you need to know for now is that a union type is a type that allows us to represent and categorise data that can take multiple forms, much like an *enum*, but more powerful.
 
@@ -70,7 +70,7 @@ twilight.match({
 }) // -> 'Twilight Sparkle uses Levitation!'
 ```
 
-We can use the method `match` to execute specific logic depending on the kind of pony that we have. Similar to how we would use a `switch` statement on an `enum` in Java, but with the added benefit that each type can have associated different data.
+We can use the method `match` to execute specific logic depending on the kind of pony that we have. Similar to how we would use a `switch` statement on an `enum` in Java, but with the added benefit that each type can have associated a different type data.
 
 # Usage examples
 
@@ -78,7 +78,7 @@ Let's look at a couple sligthly less silly examples to get an idea of how a unio
 
 ## Example 1: handle errors in node
 
-Let's pretend we are building a REST API using node and express.js. Our API has an endpoint that fetches a pony from the database by id.
+Let's pretend we are building a REST API using node and express.js. Our API has an endpoint that returns a pony from the database by id.
 
 Our express app looks something like this.
 
@@ -186,7 +186,7 @@ Let's try a different example, then. Pretend that we have a React component that
 1. **Not asked**. The data has not yet been asked to the server.
 2. **Pending**. The data has been asked to the server, but no response has been received yet.
 3. **Success**. The data has been received from the server.
-4. **Failure**. The server responded with an error.
+4. **Failure**. An error has happened somewhere during the communication.
 
 Let's model this with a union type.
 
@@ -312,7 +312,7 @@ class Pony extends React.Component {
 }
 ```
 
-And we're done! We have a component that will render one of four states, without using messy boolean flags all over the place.
+And we're done! We have a component that will inform the user about what's going on with the call to the server without using messy boolean flags all over the place.
 
 You can check the full example in this [GitHub repo](https://github.com/Avalander/union-types-example/tree/master/examples/react).
 
