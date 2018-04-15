@@ -6,7 +6,7 @@ tags: javascript, functional, union types, adt
 cover_image: https://68.media.tumblr.com/6eb7fb9f4587aafdf339f99ea6966e05/tumblr_nrovyt8g2T1qd5ajyo1_1280.jpg
 ---
 
-*(Cover image: __Lanterns__, by Anna Sánchez. Original picture [here](http://annasanchez.tumblr.com/post/124411134425/lanterns-2013-h%E1%BB%99i-an-vietnam-h%E1%BB%99i-an-at-night))*
+*(Cover image: __Lanterns__, by Anna Sánchez Inglada. Original picture [here](http://annasanchez.tumblr.com/post/124411134425/lanterns-2013-h%E1%BB%99i-an-vietnam-h%E1%BB%99i-an-at-night))*
 
 Lately I've been learnig [Elm](http://elm-lang.org/) and I'm entirely fascinated by its [union types](https://guide.elm-lang.org/types/union_types.html). In this article I'll show a way to implement union types in Javascript and explain through examples how they could be useful.
 
