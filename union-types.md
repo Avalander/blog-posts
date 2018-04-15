@@ -223,7 +223,7 @@ class Pony extends React.Component {
 }
 ```
 
-We create a component that will hold some data and start with the state `NotAsked`. Let's render that state. We probably want a text telling the user to load the data and a button to trigger the call to the server.
+We've created a component that will hold some data and start with the state `NotAsked`. Let's render that state. We probably want a text telling the user to load the data and a button to trigger the call to the server.
 
 ```javascript
 class Pony extends React.Component {
