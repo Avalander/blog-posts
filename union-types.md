@@ -9,13 +9,13 @@ Lately I've been learnig [Elm](http://elm-lang.org/) and I'm entirely fascinated
 
 # What are union types?
 
-Union types, also known as algebraic data types (or ADTs) are a way to express complex data that can take multiple forms. I won't dive deep into union types theory, but this [Wikipedia article](https://en.wikipedia.org/wiki/Algebraic_data_type) does an excelent job at explaining them.
+Union types, also known as algebraic data types (or ADTs), are a way to express complex data that can take multiple forms. I won't dive deep into union types theory, but this [Wikipedia article](https://en.wikipedia.org/wiki/Algebraic_data_type) does an excelent job at explaining them.
 
 All you need to know for now is that a union type is a type that allows us to represent and categorise data that can take multiple forms, much like an *enum*, but more powerful.
 
 # How to implement union types in Javascript
 
-Before diving into why union types are useful and how to use them, let's try to implement them in Javascript. Here I've implemented a helper function that I call `union`. It receives a list of type names and returns an object describing the union type.
+Before looking into why union types are useful and how to use them, let's try to implement them in Javascript. Here I've implemented a helper function that I call `union`. It receives a list of type names and returns an object describing the union type.
 
 ```javascript
 const union = types =>
@@ -116,7 +116,7 @@ const ApiError = union([
 ])
 ```
 
-If the user is not properly authenticated, we'll return an `InvalidCredentials` error. If the pony doesn't exist in the database, we'll return a `NotFound`, and we'll group all unexpected errors in `Other`.
+If the user is not properly authenticated, we'll return an `InvalidCredentials` error. If the pony doesn't exist in the database, we'll return a `NotFound`. We'll group all unexpected errors in `Other`.
 
 Let's look at the first step. Let's assume that we have a function called `authorise` that checks a user token and returns `true` if it's valid and `false` otherwise, and that we have some middleware that reads the user token from a header or a cookie and stores it in `req.bearer`. We will wrap the call to `authorise` in a promise because we have some asynchronous operations and we want to handle all errors through the rejection branch of the promise.
 
@@ -139,8 +139,12 @@ app.get('/ponies/:id', (req, res) =>
     })
     .then(() => new Promise((resolve, reject)) =>
         db.collection('ponies').findOne({ id: req.params.id }, (err, data) => {
-            if (err) return reject(ApiError.Other())
-            if (data == null) return reject(ApiError.NotFound())
+            if (err) {
+                return reject(ApiError.Other(err))
+            }
+            if (data == null) {
+                return reject(ApiError.NotFound(`Pony ${req.params.id} not found.`))
+            }
             return resolve(data)
         })
     )
@@ -159,8 +163,12 @@ app.get('/ponies/:id', (req, res) =>
     })
     .then(() => new Promise((resolve, reject)) =>
         db.collection('ponies').findOne({ id: req.params.id }, (err, pony) => {
-            if (err) return reject(ApiError.Other())
-            if (pony == null) return reject(ApiError.NotFound(`Pony ${req.params.id} not found.`))
+            if (err) {
+                return reject(ApiError.Other(err))
+            }
+            if (pony == null) {
+                return reject(ApiError.NotFound(`Pony ${req.params.id} not found.`))
+            }
             return resolve(pony)
         })
     )
@@ -301,7 +309,7 @@ class Pony extends React.Component {
                     <button onClick={this.fetchData}>Reload</button>
                 </div>
             ),
-            Failure: ({ message }) => (
+            Failure: ({ message }) => (
                 <div>
                     <p>{message}</p>
                     <button onClick={this.fetchData}>Retry</button>
