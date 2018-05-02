@@ -2,8 +2,10 @@
 title: Pixel Wars: Design
 published: false
 description: An app/hack submitted to the first-ever DEV Community contest. 
-tags: pushercontest, pixelwars
+tags: pushercontest, pixelwars, game, gamedesign
 ---
+
+**Pixel Wars** will be my entry for the [First Ever DEV Contest](https://dev.to/devteam/first-ever-dev-contest-build-a-realtime-app-with-pusher-4nhp).
 
 **Pixel Wars** is a web game inspired by [Reddit Place](https://en.wikipedia.org/wiki/Place_(Reddit)). The game will have a square canvas with a number of cells. The player can click on a cell to claim it, and the goal is to have as many cells as possible.
 
@@ -22,3 +24,5 @@ This is a real time game in the sense that when a player claims a cell, all othe
 # Tech stack
 
 I will create a simple backend with Node and MongoDB and I will use Elm in the frontend.
+
+That was my introduction. I hope to see plenty of entries, and good luck to everybody participating in the challenge!
