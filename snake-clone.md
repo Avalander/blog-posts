@@ -79,8 +79,8 @@ export const rect = (attrs, children) => h('rect', attrs, children)
 import { svg, g, rect } from './svg'
 ```
 
-> **Note: why not jsx?**
->
+> Note: why not jsx?
+> ---
 > If you look around for resources on hyperapp, you will notice that most of them use jsx instead of the html helpers. While we could do the same here, I favour the html helpers because I find easier to reason about plain Javascript code, I don't have to write a closing tag for my elements, and most of the time we need to mix plain Javascript code in our jsx anyway.
 
 Now we are all set up to start actually building our game.
@@ -322,15 +322,15 @@ And now we remove that bunch of `if` statements from our `updateSnake` function 
 ```javascript
 // main.js
 const updateSnake = (snake, direction) => {
-	for (let i = snake.length - 1; i > 0; i--) {
-		snake[i].x = snake[i - 1].x
-		snake[i].y = snake[i - 1].y
-	}
-	
-	snake[0].x += SIZE * DIRECTIONS[direction].x
-	snake[0].y += SIZE * DIRECTIONS[direction].y
+    for (let i = snake.length - 1; i > 0; i--) {
+        snake[i].x = snake[i - 1].x
+        snake[i].y = snake[i - 1].y
+    }
+    
+    snake[0].x += SIZE * DIRECTIONS[direction].x
+    snake[0].y += SIZE * DIRECTIONS[direction].y
 
-	return snake
+    return snake
 }
 ```
 
@@ -350,10 +350,10 @@ import { withFx, delay, action, keydown } from '@hyperapp/fx'
 ```javascript
 // main.js
 const actions = {
-	start: () => [
-		keydown('keyPressed'),
-		action('frame'),
-	],
+    start: () => [
+        keydown('keyPressed'),
+        action('frame'),
+    ],
 }
 
 // Replace 'game.frame()' with this.
@@ -365,10 +365,10 @@ And now we have to implement the `keyPressed` action. Basically, we want to igno
 ```javascript
 // main.js
 const KEY_TO_DIRECTION = {
-	ArrowUp: 'up',
-	ArrowDown: 'down',
-	ArrowLeft: 'left',
-	ArrowRight: 'right',
+    ArrowUp: 'up',
+    ArrowDown: 'down',
+    ArrowLeft: 'left',
+    ArrowRight: 'right',
 }
 ```
 
@@ -379,12 +379,12 @@ Now for the `keyPressed` action. It is going to receive a regular `keydown` even
 ```javascript
 // main.js
 const actions = {
-	keyPressed: ({ key }) => state => ({
-		...state,
-		direction: Object.keys(KEY_TO_DIRECTION).includes(key)
-			? KEY_TO_DIRECTION[key]
-			: state.direction
-	})
+    keyPressed: ({ key }) => state => ({
+        ...state,
+        direction: Object.keys(KEY_TO_DIRECTION).includes(key)
+            ? KEY_TO_DIRECTION[key]
+            : state.direction
+    })
 }
 ```
 
@@ -393,15 +393,15 @@ While this works, it is semantically inaccurate. We called our action `keyPresse
 ```javascript
 // main.js
 const actions = {
-	keyPressed: ({ key }) =>
-		(Object.keys(KEY_TO_DIRECTION).includes(key)
-			? [ action('changeDirection', KEY_TO_DIRECTION[key]) ]
-			: []
-		),
-	changeDirection: direction => state => ({
-		...state,
-		direction,
-	}),
+    keyPressed: ({ key }) =>
+        (Object.keys(KEY_TO_DIRECTION).includes(key)
+            ? [ action('changeDirection', KEY_TO_DIRECTION[key]) ]
+            : []
+        ),
+    changeDirection: direction => state => ({
+        ...state,
+        direction,
+    }),
 }
 ```
 
@@ -416,24 +416,65 @@ To achieve that, we will sophisticate our `changeDirection` action a bit more. I
 ```javascript
 // main.js
 const OPPOSITE_DIRECTION = {
-	up: 'down',
-	down: 'up',
-	left: 'right',
-	right: 'left',
+    up: 'down',
+    down: 'up',
+    left: 'right',
+    right: 'left',
 }
 
 const actions = {
-	changeDirection: direction => state => ({
-		...state,
-		direction: (direction === OPPOSITE_DIRECTION[state.direction]
-			? state.direction
-			: direction
-		)
-	}),
+    changeDirection: direction => state => ({
+        ...state,
+        direction: (direction === OPPOSITE_DIRECTION[state.direction]
+            ? state.direction
+            : direction
+        )
+    }),
 }
 ```
 
 Now `changeDirection` will only switch to the new direction if it is not opposite to the previous direction.
+
+However, there is a bug in that code. `changeDirection` can be triggered multiple times between frames, while the snake will only move once. Therefore, if the snake is moving to the left and the player presses the up arrow, the `direction` while change to `'up'`. Now, if the player presses the right arrow before the next frame, `direction` will change to `'right'` before the snake has moved up. Effectively, the snake will switch directions from left to right in the next frame.
+
+Go ahead, change `SPEED` to a larger value, like `500`, and see it for yourself.
+
+One way to avoid that is to add a new property in the state, `next_direction`, and have `changeDirection` update that property instead. Then, we always have the current direction in `direction` and we can check that we are not setting the opposite direction.
+
+Then, we will create a new action, `updateDirection`, that will update the direction only once per frame.
+
+```javascript
+// main.js
+const state = {
+    direction: 'right',
+    next_direction: 'right',
+}
+
+const actions = {
+    frame: () => [
+        action('updateDirection'),
+        action('updateSnake'),
+        delay(SPEED, 'frame'),
+    ],
+    updateDirection: () => state => ({
+        ...state,
+        direction: state.next_direction,
+    }),
+    changeDirection: direction => state => ({
+        ...state,
+        next_direction: (direction === OPPOSITE_DIRECTION[state.direction]
+            ? state.next_direction
+            : direction
+        )
+    }),
+}
+```
+
+There we go.
+
+1. We added a new property `next_direction` to `state`.
+2. `changeDirection` will place the direction for the next frame in `next_direction` instead of `direction`, checking that the new value is not the opposite direction to what is in `direction`.
+3. We created a new action, `updateDirection`, that will be triggered once per frame and will take the most recent value in `next_direction` and place it in `direction` before the snake is updated.
 
 ```javascript
 // main.js
