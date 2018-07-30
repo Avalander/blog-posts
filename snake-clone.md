@@ -1,7 +1,7 @@
 ---
-title: Create a Snake clone with Hyperapp
+title: Create a Snake clone with Hyperapp, part 1
 published: false
-description:
+description: We'll explore how to create a snake clone using Hyperapp and SVG graphics.
 tags: tutorial, javascript, hyperapp, snake
 ---
 
@@ -85,7 +85,7 @@ import { svg, g, rect } from './svg'
 
 Now we are all set up to start actually building our game.
 
-#Background
+# Background
 
 The background is going to be a green rectangle covering the entire playable area. Let's start defining some constants.
 
@@ -187,7 +187,7 @@ const view = state =>
 
 The `Snake` component is receiving the array of points from our `state` object and converting each point to a `rect` element in the point's coordinates.
 
-## Add time
+## Movement
 
 Now we should see our snake on screen, but it's not moving yet. It's time to fix that.
 
@@ -476,19 +476,6 @@ There we go.
 2. `changeDirection` will place the direction for the next frame in `next_direction` instead of `direction`, checking that the new value is not the opposite direction to what is in `direction`.
 3. We created a new action, `updateDirection`, that will be triggered once per frame and will take the most recent value in `next_direction` and place it in `direction` before the snake is updated.
 
-```javascript
-// main.js
+# Conclusion
 
-```
-
-# Add apple
-
-# Eat apple
-
-# End game
-
-## Out of bounds
-
-## Self collision
-
-## End game screen
+That was a lot of text, congratulations on making it so far! In the second part of the tutorial we will explore how to add apples, make the snake grow, and end the game when the snake collides with a border or with itself.
