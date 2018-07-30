@@ -202,22 +202,18 @@ We are going to need a way to update our state regularly. We can use `hyperapp/f
 // main.js
 import { withFx, delay } from '@hyperapp/fx'
 
-const SPEED = 150
+const UPDATE_INTERVAL = 150
 
 const actions = {
     frame: () => [
-        delay(SPEED, 'frame')
+        delay(UPDATE_INTERVAL, 'frame')
     ]
 }
 ```
 
 1. We import the function `delay` from `hyperapp/fx`.
-2. We create the constant `SPEED`, which is the amount of milliseconds that will elapse between each frame.
-3. We create an action called `frame` that will spawn another frame every `SPEED` milliseconds.
-
-> On naming `SPEED`
-> ---
-> In this case, the name `SPEED` is not really accurate because what we are defining is *time over distance*, i.e., how much time it takes for the snake to move one cell. *Speed* is defined as *distance over time*, or what distance would the snake move in a given amount of time. Therefore, the constant `SPEED` defines the *inverse speed* of the snake, and not the *actual speed*. I couldn't find a name that was both short and intuitive for someone whose knowledge on physics is a bit rusty, so I chose to go with `SPEED`. Please, write in the comments if you know a better name.
+2. We create the constant `UPDATE_INTERVAL`, which is the amount of milliseconds that will elapse between each frame.
+3. We create an action called `frame` that will spawn another frame every `UPDATE_INTERVAL` milliseconds.
 
 That's handy, but nothing is happening yet. We need to trigger the first frame, so the chain of updates will start rolling. Fortunately, `hyperapp`'s `app` function returns an object with all the actions wired, so we can just call `frame` for the first time from there.
 
@@ -245,7 +241,7 @@ import { withFx, delay, action } from '@hyperapp/fx'
 const actions = {
     frame: () => [
         action('sayHi'),
-        delay(SPEED, 'frame'),
+        delay(UPDATE_INTERVAL, 'frame'),
     ],
     sayHi: () => console.log('Hello, there!'),
 }
@@ -273,7 +269,7 @@ Now we will remove the `sayHi` action and create an action to update the snake i
 const actions = {
     frame: () => [
         action('updateSnake'),
-        delay(SPEED, 'frame'),
+        delay(UPDATE_INTERVAL, 'frame'),
     ],
     updateSnake: () => state => ({
         ...state,
@@ -446,7 +442,7 @@ Now `changeDirection` will only switch to the new direction if it is not opposit
 
 However, there is a bug in that code. `changeDirection` can be triggered multiple times between frames, while the snake will only move once. Therefore, if the snake is moving to the left and the player presses the up arrow, the `direction` while change to `'up'`. Now, if the player presses the right arrow before the next frame, `direction` will change to `'right'` before the snake has moved up. Effectively, the snake will switch directions from left to right in the next frame.
 
-Go ahead, change `SPEED` to a larger value, like `500`, and see it for yourself.
+Go ahead, change `UPDATE_INTERVAL` to a larger value, like `500`, and see it for yourself.
 
 One way to avoid that is to add a new property in the state, `next_direction`, and have `changeDirection` update that property instead. Then, we always have the current direction in `direction` and we can check that we are not setting the opposite direction.
 
@@ -463,7 +459,7 @@ const actions = {
     frame: () => [
         action('updateDirection'),
         action('updateSnake'),
-        delay(SPEED, 'frame'),
+        delay(UPDATE_INTERVAL, 'frame'),
     ],
     updateDirection: () => state => ({
         ...state,
