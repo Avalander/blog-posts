@@ -23,3 +23,5 @@ tags: tutorial, javascript, hyperapp, snake
 ## Self collision
 
 ## End game screen
+
+# Improvements

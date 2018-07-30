@@ -5,7 +5,14 @@ description: We'll explore how to create a snake clone using Hyperapp and SVG gr
 tags: tutorial, javascript, hyperapp, snake
 ---
 
-In this tutorial I'm going to cover how to create a snake clone using [hyperapp](https://github.com/hyperapp/hyperapp). There are no big requirements, but you should at least have read the [getting started guide](https://github.com/hyperapp/hyperapp#getting-started) and be familiar with ES6 syntax.
+In this tutorial I'm going to cover how to create a snake clone using [hyperapp](https://github.com/hyperapp/hyperapp). There are no big requirements, but you should at least have read the [getting started guide](https://github.com/hyperapp/hyperapp#getting-started) for hyperapp and be familiar with ES6 syntax.
+
+In particular, these are the ES6 features you should be familiar with to understand the code.
+- [Import statements](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
+- [Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions).
+- [Destructuring assignments](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment).
+- [Spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax).
+- [Ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator). Not actually an ES6 feature, but I use it abundantly and some developers are not familiar with it.
 
 # Create project and install dependencies
 
@@ -34,13 +41,9 @@ import { withFx } from '@hyperapp/fx'
 import { div } from '@hyperapp/html'
 
 
-const state = {
+const state = {}
 
-}
-
-const actions = {
-
-}
+const actions = {}
 
 const view = state =>
     div()
@@ -82,8 +85,10 @@ import { svg, g, rect } from './svg'
 > Note: why not jsx?
 > ---
 > If you look around for resources on hyperapp, you will notice that most of them use jsx instead of the html helpers. While we could do the same here, I favour the html helpers because I find easier to reason about plain Javascript code, I don't have to write a closing tag for my elements, and most of the time we need to mix plain Javascript code in our jsx anyway.
+>
+> Nevertheless, if you would rather write jsx, you should be able to follow this tutorial anyway and you don't need the `svg.js` file with the svg helper functions.
 
-Now we are all set up to start actually building our game.
+Now we are all set up and it's time to start actually building our game.
 
 # Background
 
@@ -100,7 +105,7 @@ const COLORS = {
 }
 ```
 
-`SIZE` is how big the cells will be. `WIDTH` and `HEIGHT` are the sizes of the playing area. Instead of defining them with absolute values, we do it in proportions to `SIZE` so that the board has always the same relative size independently of scale.
+`SIZE` is how big the cells will be. `WIDTH` and `HEIGHT` are the sizes of the playing area. Instead of defining them with absolute values, we do it in proportion to `SIZE` so that the board has always the same relative size independently of scale.
 
 `COLORS.background` is the colour we are going to use to fill our background.
 
@@ -209,6 +214,10 @@ const actions = {
 1. We import the function `delay` from `hyperapp/fx`.
 2. We create the constant `SPEED`, which is the amount of milliseconds that will elapse between each frame.
 3. We create an action called `frame` that will spawn another frame every `SPEED` milliseconds.
+
+> On naming `SPEED`
+> ---
+> In this case, the name `SPEED` is not really accurate because what we are defining is *time over distance*, i.e., how much time it takes for the snake to move one cell. *Speed* is defined as *distance over time*, or what distance would the snake move in a given amount of time. Therefore, the constant `SPEED` defines the *inverse speed* of the snake, and not the *actual speed*. I couldn't find a name that was both short and intuitive for someone whose knowledge on physics is a bit rusty, so I chose to go with `SPEED`. Please, write in the comments if you know a better name.
 
 That's handy, but nothing is happening yet. We need to trigger the first frame, so the chain of updates will start rolling. Fortunately, `hyperapp`'s `app` function returns an object with all the actions wired, so we can just call `frame` for the first time from there.
 
@@ -374,7 +383,7 @@ const KEY_TO_DIRECTION = {
 
 This may look like a bit of repetition, but it will make our life easier in a minute.
 
-Now for the `keyPressed` action. It is going to receive a regular `keydown` event, of which we are only interested in knowing the property `key` (the property key have be one of those four `ArrowSomething` values if we're interested in it or another string otherwise). The `keyPressed` action should update the direction in the state if an arrow key is pressed and do nothing otherwise.
+Now for the `keyPressed` action. It is going to receive a regular `keydown` event, of which we are only interested in knowing the property `key` (the property key have be one of those four `Arrow[Something]` values if we're interested in it or another string otherwise). The `keyPressed` action should update the direction in the state if an arrow key is pressed and do nothing otherwise.
 
 ```javascript
 // main.js
@@ -409,7 +418,7 @@ There we go. Now `keyPressed` will check if the `key` property of the event is a
 
 `changeDirection` simply receives a direction and updates the state with that direction.
 
-There is yet one thing we need to take care of. In the current state, our snake can switch to the opposit direction. If it is moving to the right and the player presses the left arrow, it will change direction to the left and walk over itself. We would like to avoid that.
+There is yet one thing we need to take care of. In the current state, our snake can switch to the opposite direction. If it is moving to the right and the player presses the left arrow, it will change direction to the left and walk over itself. We would like to prevent that.
 
 To achieve that, we will sophisticate our `changeDirection` action a bit more. Instead of blindly updating the direction, it will update it *only* if the new direction is not opposite to the current direction. To easily know if the current and new directions are opposite, we will create a new dictionary with each direction's opposite (this is the last directions dictionary we create, I promise).
 
@@ -478,4 +487,4 @@ There we go.
 
 # Conclusion
 
-That was a lot of text, congratulations on making it so far! In the second part of the tutorial we will explore how to add apples, make the snake grow, and end the game when the snake collides with a border or with itself.
+That was a lot of text, congratulations on making it so far! In the second part of the tutorial we will explore how to add apples and score, make the snake grow, and end the game when the snake collides with a border or with itself.
