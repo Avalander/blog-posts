@@ -5,6 +5,8 @@ description: We'll explore how to create a snake clone using Hyperapp and SVG gr
 tags: tutorial, javascript, hyperapp, snake
 ---
 
+[Here is a demo](https://avalander.github.io/hypersnake-tutorial/) of what we are going to build.
+
 In this tutorial I'm going to cover how to create a snake clone using [hyperapp](https://github.com/hyperapp/hyperapp). There are no big requirements, but you should at least have read the [getting started guide](https://github.com/hyperapp/hyperapp#getting-started) for hyperapp and be familiar with ES6 syntax.
 
 In particular, these are the ES6 features you should be familiar with to understand the code.
@@ -12,18 +14,17 @@ In particular, these are the ES6 features you should be familiar with to underst
 - [Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions).
 - [Destructuring assignments](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment).
 - [Spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax).
-- [Ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator). Not actually an ES6 feature, but I use it abundantly and some developers are not familiar with it.
+- [Ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator). Not actually an ES6 feature, but I use it abundantly, so you should be able to read it.
 
 # Create project and install dependencies
 
 To create the project, simply create a new project in an empty folder using `npm init` and install the following dependencies.
 
 ```bash
-$ npm i --save hyperapp @hyperapp/html @hyperapp/fx
+$ npm i --save hyperapp @hyperapp/fx
 ```
 
 - **hyperapp**: [hyperapp](https://github.com/hyperapp/hyperapp) is a minimalistic javascript framework for creating web applications, heavily inspired by Elm.
-- **hyperapp/html**: [hyperapp/html](https://github.com/hyperapp/html) provides helper functions to create DOM elements.
 - **hyperapp/fx**: [hyperapp/fx](https://github.com/hyperapp/fx) provides functions that we can use to set up time intervals and other side effects easily.
 
 I'm using webpack to build this project, but I won't get into how to set it up here. If you are feeling lazy, you can download the set up [from this repo](https://github.com/Avalander/hypersnake-tutorial/tree/setup-build).
@@ -38,15 +39,13 @@ Hyperapp exposes a function called `app` that receives an initial state, the act
 // main.js
 import { app } from 'hyperapp'
 import { withFx } from '@hyperapp/fx'
-import { div } from '@hyperapp/html'
 
 
 const state = {}
 
 const actions = {}
 
-const view = state =>
-    div()
+const view = state => {}
 
 const game = withFx(app) (state, actions, view, document.body)
 ```
@@ -55,7 +54,7 @@ const game = withFx(app) (state, actions, view, document.body)
 
 We are going to use SVG to render our game. We could easily use the canvas API instead, but I find SVG to be a great choice when you only need to draw basic shapes.
 
-The package `hyperapp/html` provides some handy functions to create virtual dom nodes. Unfortunately, there is no official package with similar helper functios to create SVG elements. We can still create SVG elements with `hyperapp`'s `h` function, but wouldn't it be nice if we could write our code like this?
+The package `@hyperapp/html` provides some handy functions to create virtual dom nodes. Unfortunately, there is no official package with similar helper functios to create SVG elements. We can still create SVG elements with `hyperapp`'s `h` function, but wouldn't it be nice if we could write our code like this?
 
 ```javascript
 svg({ viewBox: '0 0 600 400' }, [
@@ -86,7 +85,7 @@ import { svg, g, rect } from './svg'
 > ---
 > If you look around for resources on hyperapp, you will notice that most of them use jsx instead of the html helpers. While we could do the same here, I favour the html helpers because I find easier to reason about plain Javascript code, I don't have to write a closing tag for my elements, and most of the time we need to mix plain Javascript code in our jsx anyway.
 >
-> Nevertheless, if you would rather write jsx, you should be able to follow this tutorial anyway and you don't need the `svg.js` file with the svg helper functions.
+> Nevertheless, if you would rather write jsx, you should be able to follow this tutorial anyway and you don't need the `svg.js` file with the svg helper functions. Just make sure that you are importing the function `h` from `hyperapp` in your `main.js` if you use jsx.
 
 Now we are all set up and it's time to start actually building our game.
 
@@ -114,10 +113,8 @@ We need to add a `svg` element where the game is going to be rendered, so let's 
 ```javascript
 // main.js
 const view = state =>
-    div([
-        svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
+    svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
 
-        ]),
     ])
 ```
 
@@ -126,10 +123,8 @@ We could nest some more SVG elements there to create our background, but the `vi
 ```javascript
 // main.js
 const view = state =>
-    div([
-        svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
-            Background(),
-        ]),
+    svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
+        Background(),
     ])
 
 const Background = () =>
@@ -182,11 +177,9 @@ const Snake = state =>
     )
 
 const view = state =>
-    div([
-        svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
-            Background(),
-            Snake(state.snake),
-        ]),
+    svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
+        Background(),
+        Snake(state.snake),
     ])
 ```
 
@@ -485,4 +478,4 @@ There we go.
 
 That was a lot of text, congratulations on making it so far! In the second part of the tutorial we will explore how to add apples and score, make the snake grow, and end the game when the snake collides with a border or with itself.
 
-You can find the code we've written so far [here](https://github.com/Avalander/hypersnake-tutorial/tree/snake-moving/src).
+You can find the code we've written so far [here](https://github.com/Avalander/hypersnake-tutorial/tree/end-part-1/src).
