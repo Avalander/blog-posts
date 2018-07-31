@@ -10,7 +10,7 @@ cover_image: https://images.unsplash.com/photo-1508155250035-b2978b7ffbb1?ixlib=
 
 This is the second part of the tutorial, if you haven't already, make sure to follow [part 1](). You can checkout how the code should look like so far [here](https://github.com/Avalander/hypersnake-tutorial/tree/end-part-1/src). The demo of the final version of the game is [here](https://avalander.github.io/hypersnake-tutorial/).
 
-# Apple
+# Create apples
 
 Let's start by adding a function to create apples. That function should position the apple in a random cell on the board.
 
@@ -74,7 +74,7 @@ const view = state =>
 
 Make sure to put the `Apple` component in the `view` function before the `Snake` component, otherwise when the snake and the apple are overlapping, the apple will be drawn on top.
 
-## Eat the apple
+## Eat the apples
 
 The snake should eat the apple when the head is in the same cell. First of all, we will create a function `collision` that will return `true` if two objects are in the same cell and `false` otherwise.
 
