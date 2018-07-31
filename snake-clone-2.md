@@ -193,10 +193,169 @@ const actions = {
 
 # End game
 
+We can control the snake, it is eating randomly located apples, and each apple consumed increases the score. The only thing missing is a way to end the game.
+
+Traditionally, the snake game has two end conditions:
+1. The head of the snake collides with one of the board's boundaries.
+2. The head of the snake collides with any other cell of its body.
+
+We are going to implement both of them.
+
 ## Out of bounds
+
+To check if the snake has collided with a boundary, we will check if it's position is beyond any of the board borders after updating it. We will start by creating a function `isOutOfBounds` that will receive a point and return `true` if it is outside the limits of the board and `false` otherwise.
+
+```javascript
+// main.js
+const isOutOfBounds = ({ x, y }) =>
+	x < 0 || x > WIDTH || y < 0 || y > HEIGHT
+```
+
+We want to stop updating the game when it ends, so instead of triggering a new `frame` action from `frame` itself, we will create a new action and call it `continue`. This action will check whether the snake is out of bounds, if it isn't, it will trigger a new `frame`, otherwise, it won't.
+
+```javascript
+// main.js
+const actions = {
+	frame: () => [
+		action('updateDirection'),
+		action('updateSnake'),
+		action('checkEatApple'),
+		action('continue'),
+	],
+	continue: () => state =>
+		(isOutOfBounds(state.snake[0])
+			? []
+			: delay(UPDATE_INTERVAL, 'frame')
+		),
+}
+```
+
+Go ahead and run into all borders, you will see that the game stops running.
 
 ## Self collision
 
+To check if the head of the snake is colliding with its tail, we will create a new function, `selfCollide`, that will iterate over every cell in the tail and return `true` if it finds a cell that is in the same position as the head, and `false` otherwise.
+
+```javascript
+// main.js
+const selfCollision = ([ head, ...tail ]) =>
+	tail.some(({ x, y }) =>
+		x === head.x && y === head.y
+	)
+```
+
+The function `Array.prototype.some` receives a predicate function and returns `true` if it evaluates to `true` for any element in the array, and `false` otherwise, exactly what we need.
+
+To end the game when the snake steps on itself, we can add a check for `selfCollision` in the `continue` action and end the game if it returns `true`.
+
+```javascript
+// main.js
+const actions = {
+	continue: () => state =>
+		(isOutOfBounds(state.snake[0]) || selfCollision(state.snake)
+			? []
+			: delay(UPDATE_INTERVAL, 'frame')
+		),
+}
+```
+
 ## End game screen
+
+Now the game stops running whenever one of the two end conditions is met, but that's not enough, we need a _game over_ screen to make it look polished.
+
+We need to know whether the game is running or it has already ended to decide if we have to render the game over screen or not. We will add a `is_running` property to our state object and initialise it to `true`.
+
+```javascript
+// main.js
+const state = {
+    is_running: true,
+}
+```
+
+When the game ends, we will set `is_running` to false. To achieve this, we will create a new action `updateIsRunning` and trigger it from the `continue` action when we end the game to set `is_running` to `false`.
+
+```javascript
+// main.js
+const actions = {
+	continue: () => state =>
+		(isOutOfBounds(state.snake[0]) || selfCollision(state.snake)
+			? action('updateIsRunning', false)
+			: delay(UPDATE_INTERVAL, 'frame')
+		),
+	updateIsRunning: value => state => ({
+		...state,
+		is_running: value,
+	}),
+}
+```
+
+Now let's create a component that will render our game over screen.
+
+```javascript
+// main.js
+const game_over_style = {
+	title: {
+		font: 'bold 48px sans-seriff',
+		fill: '#fff',
+		opacity: 0.8,
+		'text-anchor': 'middle',
+	},
+	score: {
+		font: '30px sans-seriff',
+		fill: '#fff',
+		opacity: 0.8,
+		'text-anchor': 'middle',
+	}
+}
+
+const GameOver = score =>
+	g({ key: 'game-over'}, [
+		rect({
+			x: 0, y: 0, width: WIDTH, height: HEIGHT,
+			fill: '#000',
+			opacity: 0.4,
+		}),
+		text({
+			style: game_over_style.title,
+			x: WIDTH/2, y: 100,
+		}, 'Game Over'),
+		text({
+			style: game_over_style.score,
+			x: WIDTH/2, y: 160,
+		}, `Score: ${score}`),
+	])
+```
+
+Nothing fancy going on here, we simply create a `GameOver` function that returns a semi-transparent rectangle to darken the game, a text that says _Game Over_ and a text with the final score.
+
+Now let's make the `view` function render it when the game is not running.
+
+```javascript
+// main.js
+const view = state =>
+	svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
+		Background(),
+		Apple(state.apple),
+		Snake(state.snake),
+		Score(state.score),
+		!state.is_running ? GameOver(state.score) : null,
+	])
+```
+
+That would be enough, however, since the `GameOver` component already tells us the final score, there is no need to render also the `Score` component when the game is running, so we can render either depending on the value of `is_running`.
+
+```javascript
+// main.js
+const view = state =>
+	svg({ viewBox: `0 0 ${WIDTH} ${HEIGHT}`, width: WIDTH, height: HEIGHT}, [
+		Background(),
+		Apple(state.apple),
+		Snake(state.snake),
+		state.is_running
+            ? Score(state.score)
+            : GameOver(state.score),
+	])
+```
+
 
 # Improvements
