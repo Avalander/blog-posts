@@ -484,3 +484,5 @@ There we go.
 # Conclusion
 
 That was a lot of text, congratulations on making it so far! In the second part of the tutorial we will explore how to add apples and score, make the snake grow, and end the game when the snake collides with a border or with itself.
+
+You can find the code we've written so far [here](https://github.com/Avalander/hypersnake-tutorial/tree/snake-moving/src).
