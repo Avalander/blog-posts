@@ -3,7 +3,10 @@ title: Create a Snake clone with Hyperapp, part 2
 published: false
 description: We'll explore how to create a snake clone using Hyperapp and SVG graphics.
 tags: tutorial, javascript, hyperapp, snake
+cover_image: https://images.unsplash.com/photo-1508155250035-b2978b7ffbb1?ixlib=rb-0.3.5&s=490e4db15d4f4934a3eaaaa8685fdb43&auto=format&fit=crop&w=2550&q=80
 ---
+
+> Cover picture by [Dominik Vanyi](https://unsplash.com/photos/YkZW4ffuDnc) on [Unsplash](https://unsplash.com/).
 
 This is the second part of the tutorial, if you haven't already, make sure to follow [part 1](). You can checkout how the code should look like so far [here](https://github.com/Avalander/hypersnake-tutorial/tree/end-part-1/src). The demo of the final version of the game is [here](https://avalander.github.io/hypersnake-tutorial/).
 
@@ -364,6 +367,7 @@ The game is functional now, but there are still a few things that we can do to i
 - The algorithm we use to move the snake is pretty naïve, we really don't need to calculate a new position for each cell of the body. Another approach is to pick the last cell of the tail, and move it to the beginning of the array at the new position for the head and not move any other cell.
 - Add a way to restart the game (that is not reloading the window).
 - Make different apples deal a different amount of score points.
+- It's unlikely, but apples can appear in cells already occupied by the snake, find a way to prevent that.
 
 # Conclusion
 

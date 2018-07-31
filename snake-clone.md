@@ -3,7 +3,10 @@ title: Create a Snake clone with Hyperapp, part 1
 published: false
 description: We'll explore how to create a snake clone using Hyperapp and SVG graphics.
 tags: tutorial, javascript, hyperapp, snake
+cover_image: https://images.unsplash.com/photo-1508155250035-b2978b7ffbb1?ixlib=rb-0.3.5&s=490e4db15d4f4934a3eaaaa8685fdb43&auto=format&fit=crop&w=2550&q=80
 ---
+
+> Cover picture by [Dominik Vanyi](https://unsplash.com/photos/YkZW4ffuDnc) on [Unsplash](https://unsplash.com/).
 
 [Here is a demo](https://avalander.github.io/hypersnake-tutorial/) of what we are going to build.
 
@@ -89,7 +92,7 @@ import { svg, g, rect } from './svg'
 
 Now we are all set up and it's time to start actually building our game.
 
-# Background
+# Create the background
 
 The background is going to be a green rectangle covering the entire playable area. Let's start defining some constants.
 
@@ -135,7 +138,7 @@ const Background = () =>
 
 with that we should see a big, green rectangle on the screen.
 
-# Snake
+# Create the snake
 
 Let's add the main character of our game, the snake. We will store the position of the snake as an array of points in our `state` object.
 
@@ -185,7 +188,7 @@ const view = state =>
 
 The `Snake` component is receiving the array of points from our `state` object and converting each point to a `rect` element in the point's coordinates.
 
-## Movement
+## Make the snake move
 
 Now we should see our snake on screen, but it's not moving yet. It's time to fix that.
 
