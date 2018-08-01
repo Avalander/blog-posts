@@ -6,7 +6,7 @@ tags: tutorial, javascript, hyperapp, snake
 cover_image: https://images.unsplash.com/photo-1508155250035-b2978b7ffbb1?ixlib=rb-0.3.5&s=490e4db15d4f4934a3eaaaa8685fdb43&auto=format&fit=crop&w=2550&q=80
 ---
 
-> Cover picture by [Dominik Vanyi](https://unsplash.com/photos/YkZW4ffuDnc) on [Unsplash](https://unsplash.com/).
+_(Cover picture by [Dominik Vanyi](https://unsplash.com/photos/YkZW4ffuDnc) on [Unsplash](https://unsplash.com/))_
 
 [Here is a demo](https://avalander.github.io/hypersnake-tutorial/) of what we are going to build.
 
@@ -28,7 +28,7 @@ $ npm i --save hyperapp @hyperapp/fx
 ```
 
 - **hyperapp**: [hyperapp](https://github.com/hyperapp/hyperapp) is a minimalistic javascript framework for creating web applications, heavily inspired by Elm.
-- **hyperapp/fx**: [hyperapp/fx](https://github.com/hyperapp/fx) provides functions that we can use to set up time intervals and other side effects easily.
+- **@hyperapp/fx**: [hyperapp/fx](https://github.com/hyperapp/fx) provides functions that we can use to set up time intervals and other side effects easily.
 
 I'm using webpack to build this project, but I won't get into how to set it up here. If you are feeling lazy, you can download the set up [from this repo](https://github.com/Avalander/hypersnake-tutorial/tree/setup-build).
 
@@ -36,7 +36,7 @@ Now we should be ready to start coding.
 
 # Set up hyperapp
 
-Hyperapp exposes a function called `app` that receives an initial state, the actions available for our app, a function to render the view from the state, and a DOM element to mount the app. Since we are using `hyperapp/fx`, we need to wrap our `app` with the `withFx` method. Let's start with our `main.js` file.
+Hyperapp exposes a function called `app` that receives an initial state, the actions available for our app, a function to render the view from the state, and a DOM element to mount the app. Since we are using `@hyperapp/fx`, we need to wrap our `app` with the `withFx` method. Let's start with our `main.js` file.
 
 ```javascript
 // main.js
@@ -84,9 +84,9 @@ export const rect = (attrs, children) => h('rect', attrs, children)
 import { svg, g, rect } from './svg'
 ```
 
-> Note: why not jsx?
+> Note: what about jsx?
 > ---
-> If you look around for resources on hyperapp, you will notice that most of them use jsx instead of the html helpers. While we could do the same here, I favour the html helpers because I find easier to reason about plain Javascript code, I don't have to write a closing tag for my elements, and most of the time we need to mix plain Javascript code in our jsx anyway.
+> If you look around for resources on hyperapp, you will notice that most of them use jsx instead of the html helpers. While we could do the same here, I prefer using plain Javascript to define my views, so I stick to html helper functions.
 >
 > Nevertheless, if you would rather write jsx, you should be able to follow this tutorial anyway and you don't need the `svg.js` file with the svg helper functions. Just make sure that you are importing the function `h` from `hyperapp` in your `main.js` if you use jsx.
 
@@ -186,13 +186,15 @@ const view = state =>
     ])
 ```
 
-The `Snake` component is receiving the array of points from our `state` object and converting each point to a `rect` element in the point's coordinates.
+1. The function `Snake` receives the snake's body array as parameter.
+2. It creates a SVG group to enclose the snake's body elements.
+3. It maps each point in the body array to a `rect` object in the same coordinates with some style attributes.
 
 ## Make the snake move
 
 Now we should see our snake on screen, but it's not moving yet. It's time to fix that.
 
-We are going to need a way to update our state regularly. We can use `hyperapp/fx`'s `delay` function. `delay` works much like `setTimeout`, but it receives the name of an action to call after the given delay instead of a function. Let's see how we can use `delay` to create our game loop.
+We are going to need a way to update our state regularly. We can use `@hyperapp/fx`'s `delay` function. `delay` works much like `setTimeout`, but it receives the name of an action to call after the given delay instead of a function. Let's see how we can use `delay` to create our game loop.
 
 ```javascript
 // main.js
@@ -207,7 +209,7 @@ const actions = {
 }
 ```
 
-1. We import the function `delay` from `hyperapp/fx`.
+1. We import the function `delay` from `@hyperapp/fx`.
 2. We create the constant `UPDATE_INTERVAL`, which is the amount of milliseconds that will elapse between each frame.
 3. We create an action called `frame` that will spawn another frame every `UPDATE_INTERVAL` milliseconds.
 
@@ -228,7 +230,7 @@ const actions = {
 }
 ```
 
-Now we need a way to trigger that action every time we enter a new frame. That is easy enough with `hyperapp/fx`. With `hyperapp/fx`, an action can return an array of effects (one of such effects is `delay`, we are already acquainted with it). There is another effect called `action` that triggers an action from our action object. So let's import `action` from `hyperapp/fx` and trigger `sayHi` from `frame`.
+Now we need a way to trigger that action every time we enter a new frame. That is easy enough with `@hyperapp/fx`. With `@hyperapp/fx`, an action can return an array of effects (one of such effects is `delay`, we are already acquainted with it). There is another effect called `action` that triggers an action from the app's actions object. So let's import `action` from `@hyperapp/fx` and trigger `sayHi` from `frame`.
 
 ```javascript
 // main.js
@@ -339,7 +341,7 @@ const updateSnake = (snake, direction) => {
 
 Our snake is now moving. The next step is to be able to change the direction with the arrow keys.
 
-To achieve that, we are going to use an effect to trigger an action when a key is pressed. As you might suspect by now, `hyperapp/fx` exposes a function for that, called `keydown`, so let's import it and use it.
+To achieve that, we are going to use an effect to trigger an action when a key is pressed. As you might suspect by now, `@hyperapp/fx` exposes a function for that, called `keydown`, so let's import it and use it.
 
 ```javascript
 // main.js
@@ -375,7 +377,7 @@ const KEY_TO_DIRECTION = {
 
 This may look like a bit of repetition, but it will make our life easier in a minute.
 
-Now for the `keyPressed` action. It is going to receive a regular `keydown` event, of which we are only interested in knowing the property `key` (the property key have be one of those four `Arrow[Something]` values if we're interested in it or another string otherwise). The `keyPressed` action should update the direction in the state if an arrow key is pressed and do nothing otherwise.
+Now for the `keyPressed` action. It is going to receive a regular `keydown` event, of which we are only interested in knowing the property `key` (the property key will be one of those four `Arrow[Something]` values if we're interested in it or another string otherwise). The `keyPressed` action should update the direction in the state if an arrow key is pressed and do nothing otherwise.
 
 ```javascript
 // main.js

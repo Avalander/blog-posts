@@ -6,7 +6,7 @@ tags: tutorial, javascript, hyperapp, snake
 cover_image: https://images.unsplash.com/photo-1508155250035-b2978b7ffbb1?ixlib=rb-0.3.5&s=490e4db15d4f4934a3eaaaa8685fdb43&auto=format&fit=crop&w=2550&q=80
 ---
 
-> Cover picture by [Dominik Vanyi](https://unsplash.com/photos/YkZW4ffuDnc) on [Unsplash](https://unsplash.com/).
+_(Cover picture by [Dominik Vanyi](https://unsplash.com/photos/YkZW4ffuDnc) on [Unsplash](https://unsplash.com/))_
 
 This is the second part of the tutorial, if you haven't already, make sure to follow [part 1](). You can checkout how the code should look like so far [here](https://github.com/Avalander/hypersnake-tutorial/tree/end-part-1/src). The demo of the final version of the game is [here](https://avalander.github.io/hypersnake-tutorial/).
 
@@ -241,12 +241,10 @@ To check if the head of the snake is colliding with its tail, we will create a n
 ```javascript
 // main.js
 const selfCollision = ([ head, ...tail ]) =>
-    tail.some(({ x, y }) =>
-        x === head.x && y === head.y
-    )
+    tail.some(cell => collision(head, cell))
 ```
 
-The function `Array.prototype.some` receives a predicate function and returns `true` if it evaluates to `true` for any element in the array, and `false` otherwise, exactly what we need.
+The function `Array.prototype.some` receives a predicate function and returns `true` if it evaluates to `true` for any element in the array, and `false` otherwise, exactly what we need. Moreover, we can reuse the function `collision` to check if the head is colliding with any cell in the tail.
 
 To end the game when the snake steps on itself, we can add a check for `selfCollision` in the `continue` action and end the game if it returns `true`.
 
@@ -344,7 +342,7 @@ const view = state =>
     ])
 ```
 
-That would be enough, however, since the `GameOver` component already tells us the final score, there is no need to render also the `Score` component when the game is running, so we can render either depending on the value of `is_running`.
+That would be enough, however, since the `GameOver` component already tells us the final score, there is no need to render also the `Score` component when the game is over, so we can render either depending on the value of `is_running`.
 
 ```javascript
 // main.js
